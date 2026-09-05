@@ -74,6 +74,12 @@ function renderCart() {
 
 function toggleCartDrawer(open) {
   document.getElementById('cartDrawer').classList.toggle('open', open);
+
+  // hide the floating chat bubble while the cart is open — they overlap in the same corner
+  const chatBtn = document.getElementById('bandhuChatBtn');
+  const chatPanel = document.getElementById('bandhuChatPanel');
+  if (chatBtn) chatBtn.style.display = open ? 'none' : 'flex';
+  if (chatPanel && open) chatPanel.classList.remove('open'); // also close chat if it happened to be open
 }
 
 function initCart() {

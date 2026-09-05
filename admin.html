@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bandhuram — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Cinzel:wght@500;600&family=Mukta:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+
+<!-- LOGIN VIEW -->
+<div id="loginView" class="login-screen">
+  <div class="login-card">
+    <img src="assets/logo.png" alt="Bandhuram" class="login-logo">
+    <h1>Admin Login</h1>
+    <form id="loginForm">
+      <div class="fb-field">
+        <label for="loginUsername">Username</label>
+        <input type="text" id="loginUsername" required autocomplete="username">
+      </div>
+      <div class="fb-field">
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="fb-submit" id="loginSubmitBtn">Log In</button>
+      <p class="fb-status" id="loginStatus"></p>
+    </form>
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div id="dashboardView" class="admin-dashboard" style="display:none;">
+  <header class="admin-header">
+    <div class="wrap admin-header-inner">
+      <div class="admin-brand">
+        <img src="assets/logo.png" alt="Bandhuram">
+        <span>Admin Panel</span>
+      </div>
+      <div class="admin-header-actions">
+        <span id="adminUsernameLabel" class="admin-username"></span>
+        <button id="logoutBtn" class="btn-outline-gold">Log Out</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap admin-tabs">
+    <button class="admin-tab active" data-view="ordersPanel">
+      Orders <span class="count-badge" id="ordersLiveBadge" style="display:none;">New</span>
+    </button>
+    <button class="admin-tab" data-view="menuPanel">Menu</button>
+    <button class="admin-tab" data-view="inquiriesPanel">
+      Contact Inquiries <span class="count-badge" id="inquiriesLiveBadge" style="display:none;">New</span>
+    </button>
+    <button class="admin-tab" data-view="feedbackPanel">
+     Feedback <span class="count-badge" id="feedbackLiveBadge" style="display:none;">New</span>
+    </button>
+    <button class="admin-tab" data-view="galleryPanel">Gallery</button>
+  </div>
+
+  <div class="wrap">
+
+    <!-- ORDERS -->
+    <section id="ordersPanel" class="admin-panel active">
+      <div class="admin-section-head">
+        <h2>Orders</h2>
+        <span class="ws-status" id="wsStatus">Connecting…</span>
+      </div>
+      <div id="adminOrdersList" class="admin-table-wrap">
+        <div class="admin-loading">Loading orders…</div>
+      </div>
+    </section>
+
+    <!-- MENU MANAGEMENT -->
+    <section id="menuPanel" class="admin-panel">
+      <div class="admin-section-head">
+        <h2>Categories &amp; Items</h2>
+        <button class="btn-primary" id="newCategoryBtn">+ New Category</button>
+      </div>
+      <div id="adminMenuList" class="admin-menu-list">
+        <div class="admin-loading">Loading menu…</div>
+      </div>
+    </section>
+
+    <!-- CONTACT INQUIRIES -->
+    <section id="inquiriesPanel" class="admin-panel">
+      <div class="admin-section-head">
+        <h2>Contact Inquiries</h2>
+      </div>
+      <div id="adminInquiriesList" class="admin-table-wrap">
+        <div class="admin-loading">Loading inquiries…</div>
+      </div>
+    </section>
+
+    <!-- FEEDBACK MODERATION -->
+    <section id="feedbackPanel" class="admin-panel">
+      <div class="admin-section-head">
+        <h2>Guest Feedback</h2>
+      </div>
+      <div id="adminFeedbackList" class="admin-table-wrap">
+        <div class="admin-loading">Loading feedback…</div>
+      </div>
+    </section>
+
+
+    <section id="galleryPanel" class="admin-panel">
+     <div class="admin-section-head">
+      <h2>Shop Photos</h2>
+    </div>
+  <div class="fb-form" style="max-width:480px; margin-bottom:2rem;">
+    <form id="galleryUploadForm">
+      <div class="fb-field">
+        <label for="galleryFile">Photo</label>
+        <input type="file" id="galleryFile" accept="image/jpeg,image/png,image/webp" required>
+      </div>
+      <div class="fb-field">
+        <label for="galleryCaption">Caption (optional)</label>
+        <input type="text" id="galleryCaption" maxlength="150" placeholder="e.g. Litti on the coal">
+      </div>
+      <button type="submit" class="fb-submit" id="galleryUploadBtn">Upload</button>
+      <p class="fb-status" id="galleryUploadStatus"></p>
+    </form>
+  </div>
+  <div id="adminGalleryGrid" class="admin-gallery-grid"></div>
+</section>
+
+
+  </div>
+</div>
+
+<!-- CATEGORY MODAL -->
+<div id="categoryModal" class="admin-modal" style="display:none;">
+  <div class="admin-modal-card">
+    <h3 id="categoryModalTitle">New Category</h3>
+    <form id="categoryForm">
+      <input type="hidden" id="categoryId">
+      <div class="fb-field">
+        <label for="categoryName">Category name</label>
+        <input type="text" id="categoryName" required maxlength="80">
+      </div>
+      <div class="fb-field">
+        <label for="categorySortOrder">Sort order</label>
+        <input type="number" id="categorySortOrder" value="1" min="1">
+      </div>
+      <div class="admin-modal-actions">
+        <button type="button" class="btn-outline-gold" id="categoryCancelBtn">Cancel</button>
+        <button type="submit" class="btn-primary" id="categorySaveBtn">Save</button>
+      </div>
+      <p class="fb-status" id="categoryModalStatus"></p>
+    </form>
+  </div>
+</div>
+
+<!-- ITEM MODAL -->
+<div id="itemModal" class="admin-modal" style="display:none;">
+  <div class="admin-modal-card">
+    <h3 id="itemModalTitle">New Item</h3>
+    <form id="itemForm">
+      <input type="hidden" id="itemId">
+      <input type="hidden" id="itemCategoryId">
+      <div class="fb-field">
+        <label for="itemName">Item name</label>
+        <input type="text" id="itemName" required maxlength="120">
+      </div>
+      <div class="fb-field">
+        <label for="itemDescription">Description (optional)</label>
+        <input type="text" id="itemDescription" maxlength="300">
+      </div>
+      <div class="fb-field">
+        <label for="itemPriceLabel">Price label</label>
+        <input type="text" id="itemPriceLabel" required maxlength="40" placeholder="e.g. ₹50 or ₹50 / ₹90">
+      </div>
+      <div class="fb-field">
+        <label for="itemSortOrder">Sort order</label>
+        <input type="number" id="itemSortOrder" value="1" min="1">
+      </div>
+      <div class="fb-field admin-checkbox-field">
+        <label><input type="checkbox" id="itemAvailable" checked> Available on menu</label>
+      </div>
+      <div class="admin-modal-actions">
+        <button type="button" class="btn-outline-gold" id="itemCancelBtn">Cancel</button>
+        <button type="submit" class="btn-primary" id="itemSaveBtn">Save</button>
+      </div>
+      <p class="fb-status" id="itemModalStatus"></p>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

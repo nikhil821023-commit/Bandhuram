@@ -9,6 +9,12 @@ function galleryCardHTML(img) {
 async function loadGallery() {
   const grid = document.getElementById('galleryGrid');
   const section = document.getElementById('gallerySection');
+
+  if (!grid || !section) {
+    console.warn('Gallery elements not found in the DOM — check that #gallerySection and #galleryGrid exist in index.html');
+    return;
+  }
+
   try {
     const images = await API.getGallery();
     if (!images.length) {

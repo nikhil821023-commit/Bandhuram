@@ -39,6 +39,24 @@ const API = {
     return res.json();
   },
 
+  uploadItemPhoto(id, file) {
+   const formData = new FormData();
+    formData.append('file', file);
+    const token = localStorage.getItem('bandhuram_admin_token');
+    return fetch(`${CONFIG.API_BASE_URL}/api/admin/menu/items/${id}/photo`, {
+    method: 'POST',
+    headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+    body: formData
+    }).then(async res => {
+      if (res.status === 401 || res.status === 403) throw new Error('Session expired — please log in again.');
+      if (!res.ok) {
+       const err = await safeJson(res);
+        throw new Error(extractErrorMessage(err, 'Could not upload photo.'));
+      }
+      return res.json();
+    });
+  },
+
   // add inside the API object, alongside submitContact:
 
   async submitOrder(payload) {

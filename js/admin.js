@@ -70,7 +70,7 @@ function showDashboard(username) {
   loadMenuAdmin();
   loadInquiries();
   loadFeedbackAdmin();
-   loadGalleryAdmin();
+  loadGalleryAdmin();
   connectOrderSocket();
 
 }
@@ -259,6 +259,7 @@ async function loadMenuAdmin() {
   try {
     currentCategories = await API.getMenu();
     renderMenuAdmin();
+    renderBestSellersAdmin();   // ← add this line
   } catch (err) {
     list.innerHTML = `<div class="admin-loading">${escapeHtml(err.message)}</div>`;
   }
@@ -281,18 +282,19 @@ function renderMenuAdmin() {
         </div>
       </div>
       ${cat.items.map(item => `
-        <div class="admin-item-row ${item.available ? '' : 'unavailable'}">
+       <div class="admin-item-row ${item.available ? '' : 'unavailable'}">
           <div class="admin-item-info">
-            <b>${escapeHtml(item.name)}</b>
-            ${item.description ? `<span>${escapeHtml(item.description)}</span>` : ''}
+           <b>${escapeHtml(item.name)} ${item.featured ? '<span style="color:var(--gold);">⭐</span>' : ''}</b>
+           ${item.description ? `<span>${escapeHtml(item.description)}</span>` : ''}
           </div>
-          <div class="admin-item-right">
-            <span class="admin-item-price">${escapeHtml(item.priceLabel)}</span>
-            <button class="admin-icon-btn" onclick="openItemModal(${cat.id}, ${item.id})">Edit</button>
-            <button class="admin-icon-btn danger" onclick="handleDeleteItem(${item.id})">Delete</button>
+         <div class="admin-item-right">
+           <span class="admin-item-price">${escapeHtml(item.priceLabel)}</span>
+           <button class="admin-icon-btn" onclick="openItemModal(${cat.id}, ${item.id})">Edit</button>
+           <button class="admin-icon-btn danger" onclick="handleDeleteItem(${item.id})">Delete</button>
           </div>
-        </div>
+       </div>
       `).join('')}
+     
       <button class="admin-add-item-btn" onclick="openItemModal(${cat.id})">+ Add item to ${escapeHtml(cat.name)}</button>
     </div>
   `).join('');
@@ -387,21 +389,30 @@ function initItemModal() {
     const priceLabel = document.getElementById('itemPriceLabel').value.trim();
     const sortOrder = parseInt(document.getElementById('itemSortOrder').value, 10) || 1;
     const available = document.getElementById('itemAvailable').checked;
+    const featured = document.getElementById('itemFeatured').checked;
+    const photoFile = document.getElementById('itemPhotoFile').files[0];
     const statusEl = document.getElementById('itemModalStatus');
     const btn = document.getElementById('itemSaveBtn');
 
-    const payload = { categoryId, name, description: description || null, priceLabel, sortOrder, available };
+    const payload = { categoryId, name, description: description || null, priceLabel, sortOrder, available, featured };
 
     btn.disabled = true;
     statusEl.textContent = 'Saving…';
     statusEl.className = 'fb-status';
 
     try {
+      let savedItem;
       if (id) {
-        await API.updateItem(id, payload);
+        savedItem = await API.updateItem(id, payload);
       } else {
-        await API.createItem(payload);
+        savedItem = await API.createItem(payload);
       }
+
+      if (photoFile) {
+        statusEl.textContent = 'Uploading photo…';
+        await API.uploadItemPhoto(savedItem.id, photoFile);
+      }
+
       closeItemModal();
       loadMenuAdmin();
     } catch (err) {
@@ -416,6 +427,8 @@ function initItemModal() {
 function openItemModal(categoryId, itemId) {
   const modal = document.getElementById('itemModal');
   const title = document.getElementById('itemModalTitle');
+  const photoField = document.getElementById('itemPhotoField');
+  const photoPreview = document.getElementById('itemPhotoPreview');
   document.getElementById('itemModalStatus').textContent = '';
   document.getElementById('itemCategoryId').value = categoryId;
 
@@ -429,6 +442,12 @@ function openItemModal(categoryId, itemId) {
     document.getElementById('itemPriceLabel').value = item.priceLabel;
     document.getElementById('itemSortOrder').value = item.sortOrder ?? 1;
     document.getElementById('itemAvailable').checked = item.available;
+    document.getElementById('itemFeatured').checked = item.featured;
+
+    photoField.style.display = 'block';
+    photoPreview.innerHTML = item.photoUrl
+      ? `<img src="${CONFIG.API_BASE_URL}${item.photoUrl}" style="width:100px; height:75px; object-fit:cover; border-radius:6px;">`
+      : `<span style="font-size:0.82rem; color:var(--ink-soft);">No photo uploaded yet</span>`;
   } else {
     const cat = currentCategories.find(c => c.id === categoryId);
     title.textContent = 'New Item';
@@ -438,12 +457,57 @@ function openItemModal(categoryId, itemId) {
     document.getElementById('itemPriceLabel').value = '';
     document.getElementById('itemSortOrder').value = (cat?.items.length || 0) + 1;
     document.getElementById('itemAvailable').checked = true;
+    document.getElementById('itemFeatured').checked = false;
+    photoField.style.display = 'none';   // no item id yet — can't attach a photo until it's saved
   }
+  document.getElementById('itemPhotoFile').value = '';
   modal.style.display = 'flex';
 }
 
+
+
 function closeItemModal() {
   document.getElementById('itemModal').style.display = 'none';
+}
+
+function renderBestSellersAdmin() {
+  const list = document.getElementById('adminBestSellersList');
+  if (!list) return;
+
+  const featured = currentCategories.flatMap(cat => cat.items.map(i => ({ ...i, categoryId: cat.id }))).filter(i => i.featured);
+
+  if (!featured.length) {
+    list.innerHTML = '<div class="admin-loading">No items marked as Best Sellers yet — check the ⭐ box when editing an item.</div>';
+    return;
+  }
+
+  list.innerHTML = `<div class="admin-category-card">${featured.map(item => `
+    <div class="admin-item-row ${item.available ? '' : 'unavailable'}">
+      <div class="admin-item-info">
+        <b>${escapeHtml(item.name)}</b>
+        <span>${item.photoUrl ? 'Photo uploaded' : 'No photo yet'}${item.available ? '' : ' · Currently unavailable'}</span>
+      </div>
+      <div class="admin-item-right">
+        <span class="admin-item-price">${escapeHtml(item.priceLabel)}</span>
+        <button class="admin-icon-btn" onclick="openItemModal(${item.categoryId}, ${item.id})">Edit</button>
+        <button class="admin-icon-btn danger" onclick="handleRemoveFromBestSellers(${item.categoryId}, ${item.id})">Remove</button>
+      </div>
+    </div>
+  `).join('')}</div>`;
+}
+
+async function handleRemoveFromBestSellers(categoryId, itemId) {
+  const cat = currentCategories.find(c => c.id === categoryId);
+  const item = cat.items.find(i => i.id === itemId);
+  try {
+    await API.updateItem(itemId, {
+      categoryId, name: item.name, description: item.description, priceLabel: item.priceLabel,
+      sortOrder: item.sortOrder, available: item.available, featured: false
+    });
+    loadMenuAdmin();
+  } catch (err) {
+    alert(err.message);
+  }
 }
 
 // ================= CONTACT INQUIRIES =================

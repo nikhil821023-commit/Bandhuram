@@ -50,6 +50,7 @@
       Orders <span class="count-badge" id="ordersLiveBadge" style="display:none;">New</span>
     </button>
     <button class="admin-tab" data-view="menuPanel">Menu</button>
+    <button class="admin-tab" data-view="bestSellersPanel">Best Sellers</button>
     <button class="admin-tab" data-view="inquiriesPanel">
       Contact Inquiries <span class="count-badge" id="inquiriesLiveBadge" style="display:none;">New</span>
     </button>
@@ -80,6 +81,18 @@
       </div>
       <div id="adminMenuList" class="admin-menu-list">
         <div class="admin-loading">Loading menu…</div>
+      </div>
+    </section>
+
+    <section id="bestSellersPanel" class="admin-panel">
+      <div class="admin-section-head">
+        <h2>Best Sellers Pricing</h2>
+      </div>
+      <p style="color:var(--ink-soft); font-size:0.92rem; margin-bottom:1.5rem;">
+        These are the 8 items featured on the homepage. Editing a price here updates it everywhere — the homepage, the full menu, and this list all pull from the same item.
+      </p>
+      <div id="adminBestSellersList" class="admin-menu-list">
+      <div class="admin-loading">Loading best sellers…</div>
       </div>
     </section>
 
@@ -178,6 +191,15 @@
       <div class="fb-field admin-checkbox-field">
         <label><input type="checkbox" id="itemAvailable" checked> Available on menu</label>
       </div>
+      <div class="fb-field admin-checkbox-field">
+  <label><input type="checkbox" id="itemFeatured"> ⭐ Feature on Best Sellers (homepage)</label>
+</div>
+<div class="fb-field" id="itemPhotoField" style="display:none;">
+  <label>Best Seller Photo</label>
+  <div id="itemPhotoPreview" style="margin-bottom:0.6rem;"></div>
+  <input type="file" id="itemPhotoFile" accept="image/jpeg,image/png,image/webp">
+  <p style="font-size:0.78rem; color:var(--ink-soft); margin-top:0.4rem;">Upload after saving the item below, or upload now if editing an existing item.</p>
+</div>
       <div class="admin-modal-actions">
         <button type="button" class="btn-outline-gold" id="itemCancelBtn">Cancel</button>
         <button type="submit" class="btn-primary" id="itemSaveBtn">Save</button>

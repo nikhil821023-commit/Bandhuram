@@ -1,7 +1,7 @@
 
 
 const CONFIG = {
-  API_BASE_URL: 'http://localhost:8080',
+  API_BASE_URL: 'https://bandhuram-backend.onrender.com',
   WHATSAPP_NUMBER: '917209565334',
   PHONE_DISPLAY: '7209565334',
   PHONE_TEL: '+917209565334',

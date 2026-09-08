@@ -14,15 +14,13 @@ function renderBestSellers(categories) {
   if (section) section.style.display = 'block';
 
   grid.innerHTML = featuredItems.map(item => {
-    const photoSrc = item.photoUrl
-      ? `${CONFIG.API_BASE_URL}${item.photoUrl}`
-      : null;
+    const photoSrc = item.photoUrl ? `${CONFIG.API_BASE_URL}${item.photoUrl}` : null;
 
     return `
       <div class="bs-card">
         <div class="bs-photo">
           ${photoSrc
-            ? `<img src="${photoSrc}" alt="${escapeHtml(item.name)}">`
+            ? `<img src="${photoSrc}" alt="${escapeHtml(item.name)}" onerror="this.parentElement.innerHTML='<div class=\\'bs-photo-placeholder\\'>📷</div>'">`
             : `<div class="bs-photo-placeholder">📷</div>`}
         </div>
         <div class="bs-info">

@@ -223,7 +223,7 @@ function renderOrders(highlightId) {
         <div>
           <b>${escapeHtml(o.customerName)}</b>
           <span style="color:var(--ink-soft); font-size:0.88rem;"> · ${escapeHtml(o.phone)}</span>
-          <div class="fb-date">${new Date(o.createdAt).toLocaleString('en-IN')}</div>
+          <div class="fb-date">${formatISTDateTime(o.createdAt)}</div>
         </div>
         <select class="admin-status-select" onchange="handleOrderStatusChange(${o.id}, this.value)">
           <option value="NEW" ${o.status==='NEW'?'selected':''}>New</option>
@@ -533,7 +533,7 @@ function renderInquiries(inquiries) {
   const rows = inquiries.map(i => `
     <div class="admin-row">
       <div data-label="Name / Phone"><b>${escapeHtml(i.name)}</b><br><span style="font-size:0.85rem; color:var(--ink-soft);">${escapeHtml(i.phone)}${i.email ? ' · ' + escapeHtml(i.email) : ''}</span></div>
-      <div data-label="Received" style="font-size:0.85rem; color:var(--ink-soft);">${new Date(i.createdAt).toLocaleString('en-IN')}</div>
+      <div data-label="Received" style="font-size:0.85rem; color:var(--ink-soft);">${formatISTDateTime(o.createdAt)}</div>
       <div data-label="Message" style="font-size:0.92rem;">${escapeHtml(i.message)}</div>
       <div data-label="Status"><span class="admin-status-badge ${i.status}">${i.status}</span></div>
       <div data-label="Update">
@@ -610,7 +610,7 @@ function renderFeedbackAdmin(items) {
       <div>
         <b>${escapeHtml(f.name)}</b>
         <span class="fb-stars">${'★'.repeat(f.rating)}${'☆'.repeat(5 - f.rating)}</span>
-        <div style="font-size:0.85rem; color:var(--ink-soft); margin-top:0.3rem;">${new Date(f.createdAt).toLocaleString('en-IN')}</div>
+        <div style="font-size:0.85rem; color:var(--ink-soft); margin-top:0.3rem;">${formatISTDateTime(o.createdAt)}</div>
         <p style="margin-top:0.5rem; font-size:0.95rem; color:var(--ink-soft);">${escapeHtml(f.comment)}</p>
       </div>
       <button class="admin-icon-btn danger" onclick="handleDeleteFeedback(${f.id})">Delete</button>

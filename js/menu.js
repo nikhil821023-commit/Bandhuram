@@ -14,8 +14,7 @@ function renderBestSellers(categories) {
   if (section) section.style.display = 'block';
 
   grid.innerHTML = featuredItems.map(item => {
-    const photoSrc = item.photoUrl ? `${CONFIG.API_BASE_URL}${item.photoUrl}` : null;
-
+const photoSrc = item.photoUrl || null;   // already a full URL — no prefix needed
     return `
       <div class="bs-card">
         <div class="bs-photo">

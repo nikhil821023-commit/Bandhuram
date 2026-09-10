@@ -118,7 +118,8 @@ function initCart() {
         notes: notes || undefined,
         items: cart.map(i => ({ menuItemId: i.menuItemId, quantity: i.quantity }))
       });
-      statusEl.textContent = 'Order placed! We\'ll call you shortly to confirm.';
+      statusEl.textContent =  '🎉 Thank you for placing your order with Bandhuram! Your order has been received. Kindly call 7209565334 to confirm your order. We look forward to serving you! ❤️';
+
       statusEl.className = 'fb-status ok';
       cart = [];
       renderCart();

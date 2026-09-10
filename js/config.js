@@ -8,3 +8,11 @@ const CONFIG = {
   ADDRESS: 'Reckjoani More, Opp to Bazaar Kolkata, Kol-700135',
   HOURS_DISPLAY: 'Open daily · 8:00 AM – 10:00 PM'   // ← new
 };
+
+function formatISTDateTime(isoString) {
+  return new Date(isoString).toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    day: 'numeric', month: 'short', year: 'numeric',
+    hour: 'numeric', minute: '2-digit', hour12: true
+  });
+}

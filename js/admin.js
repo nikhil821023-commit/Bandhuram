@@ -446,8 +446,8 @@ function openItemModal(categoryId, itemId) {
 
     photoField.style.display = 'block';
     photoPreview.innerHTML = item.photoUrl
-      ? `<img src="${CONFIG.API_BASE_URL}${item.photoUrl}" style="width:100px; height:75px; object-fit:cover; border-radius:6px;">`
-      : `<span style="font-size:0.82rem; color:var(--ink-soft);">No photo uploaded yet</span>`;
+  ? `<img src="${item.photoUrl}" style="width:100px; height:75px; object-fit:cover; border-radius:6px;">`
+  : `<span style="font-size:0.82rem; color:var(--ink-soft);">No photo uploaded yet</span>`;
   } else {
     const cat = currentCategories.find(c => c.id === categoryId);
     title.textContent = 'New Item';
@@ -680,7 +680,7 @@ async function loadGalleryAdmin() {
     }
     grid.innerHTML = images.map(img => `
       <div class="admin-gallery-item">
-        <img src="${CONFIG.API_BASE_URL}${img.url}" alt="${escapeHtml(img.caption || '')}">
+      <img src="${img.url}" alt="${escapeHtml(img.caption || '')}">
         ${img.caption ? `<div class="admin-gallery-caption">${escapeHtml(img.caption)}</div>` : ''}
         <button class="admin-icon-btn danger" onclick="handleDeleteImage(${img.id})">Delete</button>
       </div>

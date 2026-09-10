@@ -1,7 +1,7 @@
 function galleryCardHTML(img) {
   return `
     <div class="gallery-photo">
-      <img src="${CONFIG.API_BASE_URL}${img.url}" alt="${escapeHtml(img.caption || 'Bandhuram')}" loading="lazy">
+    <img src="${img.url}" alt="${escapeHtml(img.caption || 'Bandhuram')}" loading="lazy">
       ${img.caption ? `<span class="gallery-caption">${escapeHtml(img.caption)}</span>` : ''}
     </div>`;
 }

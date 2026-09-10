@@ -533,7 +533,7 @@ function renderInquiries(inquiries) {
   const rows = inquiries.map(i => `
     <div class="admin-row">
       <div data-label="Name / Phone"><b>${escapeHtml(i.name)}</b><br><span style="font-size:0.85rem; color:var(--ink-soft);">${escapeHtml(i.phone)}${i.email ? ' · ' + escapeHtml(i.email) : ''}</span></div>
-      <div data-label="Received" style="font-size:0.85rem; color:var(--ink-soft);">${formatISTDateTime(o.createdAt)}</div>
+      <div data-label="Received" style="font-size:0.85rem; color:var(--ink-soft);">${formatISTDateTime(i.createdAt)}</div>
       <div data-label="Message" style="font-size:0.92rem;">${escapeHtml(i.message)}</div>
       <div data-label="Status"><span class="admin-status-badge ${i.status}">${i.status}</span></div>
       <div data-label="Update">
@@ -610,8 +610,7 @@ function renderFeedbackAdmin(items) {
       <div>
         <b>${escapeHtml(f.name)}</b>
         <span class="fb-stars">${'★'.repeat(f.rating)}${'☆'.repeat(5 - f.rating)}</span>
-        <div style="font-size:0.85rem; color:var(--ink-soft); margin-top:0.3rem;">${formatISTDateTime(o.createdAt)}</div>
-        <p style="margin-top:0.5rem; font-size:0.95rem; color:var(--ink-soft);">${escapeHtml(f.comment)}</p>
+<div style="font-size:0.85rem; color:var(--ink-soft); margin-top:0.3rem;">${formatISTDateTime(f.createdAt)}</div>        <p style="margin-top:0.5rem; font-size:0.95rem; color:var(--ink-soft);">${escapeHtml(f.comment)}</p>
       </div>
       <button class="admin-icon-btn danger" onclick="handleDeleteFeedback(${f.id})">Delete</button>
     </div>

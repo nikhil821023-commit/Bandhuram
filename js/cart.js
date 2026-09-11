@@ -92,6 +92,7 @@ function initCart() {
   document.getElementById('checkoutCancelBtn').addEventListener('click', () => {
     document.getElementById('checkoutModal').style.display = 'none';
   });
+  initOrderSuccessCard();
 
   document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -118,18 +119,12 @@ function initCart() {
         notes: notes || undefined,
         items: cart.map(i => ({ menuItemId: i.menuItemId, quantity: i.quantity }))
       });
-      statusEl.textContent =  '🎉 Thank you for placing your order with Bandhuram! Your order has been received. Kindly call 7209565334 to confirm your order. We look forward to serving you! ❤️';
+     cart = [];
+renderCart();
 
-      statusEl.className = 'fb-status ok';
-      cart = [];
-      renderCart();
-      setTimeout(() => {
-        document.getElementById('checkoutModal').style.display = 'none';
-        document.getElementById('coName').value = '';
-        document.getElementById('coPhone').value = '';
-        document.getElementById('coNotes').value = '';
-        statusEl.textContent = '';
-      }, 1800);
+// swap the form out for the success card — stays open until the user closes it themselves
+document.getElementById('checkoutForm').style.display = 'none';
+document.getElementById('checkoutSuccessView').style.display = 'block';
     } catch (err) {
       statusEl.textContent = err.message;
       statusEl.className = 'fb-status err';
@@ -139,4 +134,17 @@ function initCart() {
   });
 
   renderCart();
+}
+
+function initOrderSuccessCard() {
+  document.getElementById('orderSuccessCloseBtn').addEventListener('click', () => {
+    document.getElementById('checkoutModal').style.display = 'none';
+    // reset everything back to a clean state for next time
+    document.getElementById('checkoutSuccessView').style.display = 'none';
+    document.getElementById('checkoutForm').style.display = 'block';
+    document.getElementById('coName').value = '';
+    document.getElementById('coPhone').value = '';
+    document.getElementById('coNotes').value = '';
+    document.getElementById('checkoutStatus').textContent = '';
+  });
 }

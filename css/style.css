@@ -183,6 +183,13 @@ nav.wrap{ display:flex; align-items:center; justify-content:space-between; heigh
 .order-success-message{ font-size:1rem; color:var(--ink); line-height:1.6; margin-bottom:1.5rem; }
 .order-success-call{ display:block; width:100%; text-align:center; }
 
+.order-total-row{
+  display:flex; justify-content:space-between; align-items:baseline;
+  font-family:var(--display); font-size:1.1rem; color:var(--maroon);
+  padding-top:0.7rem; margin-top:0.4rem; border-top:1px solid var(--line);
+}
+.order-delete-btn{ display:block; width:100%; margin-top:0.8rem; text-align:center; }
+
 /* ---------------- FEATURE STRIP ---------------- */
 .feature-strip{ position:relative; background:linear-gradient(135deg, var(--maroon-deep) 0%, #3d0f0a 50%, var(--maroon) 100%); padding:2.4rem 0; overflow:hidden; box-shadow:inset 0 2px 8px rgba(0,0,0,0.2); }
 .feature-strip .wrap{ display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; position:relative; z-index:2; }

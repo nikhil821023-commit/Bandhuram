@@ -360,7 +360,7 @@
   </div>
 </div>
 
-<div id="checkoutModal" class="admin-modal" style="display:none;">
+  <div id="checkoutModal" class="admin-modal" style="display:none;">
   <div class="admin-modal-card">
     <h3>Confirm Your Order</h3>
     <form id="checkoutForm">
@@ -382,9 +382,23 @@
       </div>
       <p class="fb-status" id="checkoutStatus"></p>
     </form>
+
+    <!-- New: order success card, hidden until an order actually succeeds -->
+    <div id="checkoutSuccessView" class="order-success-card" style="display:none;">
+      <button class="order-success-close" id="orderSuccessCloseBtn" aria-label="Close">×</button>
+      <div class="order-success-icon">🎉</div>
+      <p class="order-success-message">
+        Thank you for placing your order with Bandhuram! Your order has been received.
+        Kindly call <b>7209565334</b> to confirm your order. We look forward to serving you! ❤️
+      </p>
+      <a href="tel:+917209565334" class="btn-primary order-success-call">📞 Call to Confirm</a>
+    </div>
   </div>
 </div>
 
+
+
+  
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
 <script src="js/menu.js"></script>

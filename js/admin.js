@@ -510,6 +510,33 @@ async function handleRemoveFromBestSellers(categoryId, itemId) {
   }
 }
 
+
+function parsePriceValue(label) {
+  const match = /^₹(\d+)$/.exec((label || '').trim());
+  return match ? parseInt(match[1], 10) : null;
+}
+
+function computeOrderTotal(order) {
+  let total = 0;
+  let hasVariable = false;
+  order.items.forEach(i => {
+    const price = parsePriceValue(i.priceLabel);
+    if (price === null) { hasVariable = true; return; }
+    total += price * i.quantity;
+  });
+  return { total, hasVariable };
+}
+
+async function handleDeleteOrder(id) {
+  if (!confirm('Delete this order permanently? This cannot be undone.')) return;
+  try {
+    await API.deleteOrder(id);
+    loadOrders();
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
 // ================= CONTACT INQUIRIES =================
 
 async function loadInquiries() {

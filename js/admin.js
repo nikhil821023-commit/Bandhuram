@@ -217,30 +217,39 @@ function renderOrders(highlightId) {
     return;
   }
 
-  list.innerHTML = currentOrders.map(o => `
-    <div class="order-card ${o.id === highlightId ? 'is-new' : ''}">
-      <div class="order-card-head">
-        <div>
-          <b>${escapeHtml(o.customerName)}</b>
-          <span style="color:var(--ink-soft); font-size:0.88rem;"> · ${escapeHtml(o.phone)}</span>
-          <div class="fb-date">${formatISTDateTime(o.createdAt)}</div>
-        </div>
-        <select class="admin-status-select" onchange="handleOrderStatusChange(${o.id}, this.value)">
-          <option value="NEW" ${o.status==='NEW'?'selected':''}>New</option>
-          <option value="PREPARING" ${o.status==='PREPARING'?'selected':''}>Preparing</option>
-          <option value="READY" ${o.status==='READY'?'selected':''}>Ready</option>
-          <option value="COMPLETED" ${o.status==='COMPLETED'?'selected':''}>Completed</option>
-          <option value="CANCELLED" ${o.status==='CANCELLED'?'selected':''}>Cancelled</option>
-        </select>
-      </div>
-      <ul class="order-items-list">
-        ${o.items.map(i => `<li>${i.quantity} × ${escapeHtml(i.name)} <span>${escapeHtml(i.priceLabel)}</span></li>`).join('')}
-      </ul>
-      ${o.notes ? `<p class="order-notes">Note: ${escapeHtml(o.notes)}</p>` : ''}
-    </div>
-  `).join('');
-}
+  list.innerHTML = currentOrders.map(o => {
+    const { total, hasVariable } = computeOrderTotal(o);
+    const canDelete = o.status === 'COMPLETED' || o.status === 'CANCELLED';
 
+    return `
+      <div class="order-card ${o.id === highlightId ? 'is-new' : ''}">
+        <div class="order-card-head">
+          <div>
+            <b>${escapeHtml(o.customerName)}</b>
+            <span style="color:var(--ink-soft); font-size:0.88rem;"> · ${escapeHtml(o.phone)}</span>
+            <div class="fb-date">${formatISTDateTime(o.createdAt)}</div>
+          </div>
+          <select class="admin-status-select" onchange="handleOrderStatusChange(${o.id}, this.value)">
+            <option value="NEW" ${o.status==='NEW'?'selected':''}>New</option>
+            <option value="PREPARING" ${o.status==='PREPARING'?'selected':''}>Preparing</option>
+            <option value="READY" ${o.status==='READY'?'selected':''}>Ready</option>
+            <option value="COMPLETED" ${o.status==='COMPLETED'?'selected':''}>Completed</option>
+            <option value="CANCELLED" ${o.status==='CANCELLED'?'selected':''}>Cancelled</option>
+          </select>
+        </div>
+        <ul class="order-items-list">
+          ${o.items.map(i => `<li>${i.quantity} × ${escapeHtml(i.name)} <span>${escapeHtml(i.priceLabel)}</span></li>`).join('')}
+        </ul>
+        <div class="order-total-row">
+          <span>Total</span>
+          <span>₹${total}${hasVariable ? ' +' : ''}</span>
+        </div>
+        ${hasVariable ? '<p class="order-notes">Some items have variable pricing \u2014 final total confirmed by the shop.</p>' : ''}
+        ${o.notes ? `<p class="order-notes">Note: ${escapeHtml(o.notes)}</p>` : ''}
+        ${canDelete ? `<button class="admin-icon-btn danger order-delete-btn" onclick="handleDeleteOrder(${o.id})">Delete Order</button>` : ''}
+      </div>`;
+  }).join('');
+}
 async function handleOrderStatusChange(id, status) {
   try {
     await API.updateOrderStatus(id, status);

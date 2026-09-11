@@ -186,4 +186,7 @@ deleteImage(id) {
   deleteFeedbackAdmin(id) {
     return this.authedRequest(`/api/admin/feedback/${id}`, { method: 'DELETE' });
   }
+  deleteOrder(id) {
+  return this.authedRequest(`/api/admin/orders/${id}`, { method: 'DELETE' });
+}
 };

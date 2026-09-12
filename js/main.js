@@ -14,6 +14,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }, { threshold: 0.12 });
+
+
+  if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(() => console.log('Service worker registered'))
+      .catch((err) => console.error('Service worker registration failed:', err));
+  });
+}
+
+
   
   document.querySelectorAll('.reveal:not(.in)').forEach(el => io.observe(el));
 
